@@ -26,8 +26,10 @@ app.post('/read-sheet', async (req, res) => {
     }
     const sheetId = match[1];
 
+    const creds = require('./service-account.json'); // service account key
+
     const doc = new GoogleSpreadsheet(sheetId);
-    await doc.useApiKey(process.env.GOOGLE_API_KEY); // Use API key
+    await doc.useServiceAccountAuth(creds);
 
     await doc.loadInfo();
     const sheet = doc.sheetsByIndex[0];
@@ -35,6 +37,7 @@ app.post('/read-sheet', async (req, res) => {
 
     const posts = rows.map(r => r._rawData[0]).filter(Boolean).slice(0, numberPosts);
     return res.json(posts);
+
   } catch (error) {
     console.error(error);
     return res.status(500).send("Server error: " + error.message);

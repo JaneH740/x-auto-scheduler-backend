@@ -26,7 +26,7 @@ app.post('/read-sheet', async (req, res) => {
     }
     const sheetId = match[1];
 
-    const creds = require('./service-account.json'); // service account key
+    const creds = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
 
     const doc = new GoogleSpreadsheet(sheetId);
     await doc.useServiceAccountAuth(creds);
